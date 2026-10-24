@@ -1,77 +1,157 @@
-# ProteinQ: A Variational Quantum Classifier for SIRT6 Binding
+# ProteinQ: A Variational Quantum Classifier for SIRT6 Binding Prediction
 
-**Team:** ProteinQ
-**Members:** Hareem Arshad, Alaa Osman, Ayden, Colson Asher
-**Track / Problem:** Track 2 (Quantum Machine Learning), Problem 3: Build and benchmark a variational quantum classifier
-**Python version:** [fill in, e.g. 3.11.x]
+Can a small variational quantum classifier (VQC) learn a real drug-discovery task today, and how does it compare with standard classical models?
 
-## Summary
+ProteinQ builds and benchmarks a VQC that predicts whether a small molecule is a **high** or **low** binder of the SIRT6 protein, and compares it against logistic regression, an RBF-SVM, and a random forest.
 
-SIRT6 is a protein studied as a cancer drug target, and screening molecules against it in the lab is slow and costly. We built a variational quantum classifier (VQC) from scratch in Qiskit that predicts whether a molecule from the UCI Sirtuin6 dataset (100 molecules, 6 descriptors) has a High or Low binding free energy (BFE). We tuned the VQC on a validation split, then benchmarked it on 25 held-out molecules against Logistic Regression, an RBF-SVM and a Random Forest, using all 6 features and reduced sets of 4 and 2. The VQC scored 0.88 (22/25) with 2 features, but the 95% confidence intervals of all four models overlap, so we claim no quantum advantage.
+**Track:** Quantum Machine Learning, Problem 3 (Build and Benchmark a Variational Quantum Classifier)
+**Team:** Hareem Arshad, Alaa Osman, Ayden, Colson Asher
 
-## Main result
+> **TL;DR: No quantum advantage is claimed.** Classical models beat the VQC with 6 and 4 features and are statistically indistinguishable from it with 2 features. With only 25 test molecules, the results are suggestive at best.
 
-![Main result](figures/main_result.png)
+---
 
-Test accuracy of the VQC and three classical models on 25 held-out molecules, with 95% Wilson confidence intervals. With 2 features the VQC reaches 0.88 versus 0.80 to 0.84 for the classical models, but the intervals overlap almost completely. With 6 and 4 features the classical models are equal or better (best classical result: RBF-SVM, 0.96 at 4 features).
+## Background
 
-| Features | VQC (5 seeds) | Logistic Regression | RBF-SVM | Random Forest |
-|---|---|---|---|---|
-| 6 | 0.768 | 0.80 | 0.84 | 0.84 |
-| 4 | 0.760 | 0.84 | 0.96 | 0.80 |
-| 2 | 0.880 | 0.80 | 0.84 | 0.84 |
+SIRT6 is a protein studied as a drug target. Its expression can promote oncogenesis, in part because it helps cancer cells evade apoptosis by deacetylating histone H3K9 [2]. Screening candidate inhibitors in the lab is slow and costly, so a fast model that ranks candidates first can save time.
 
-The classical models are the reference values for this comparison. The majority-class guess is 0.52.
+Binding free energy (BFE) measures how tightly a molecule binds. Low BFE means a strong binder and a better drug candidate.
 
-## How to reproduce (clean start)
+## Dataset
 
-```bash
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-jupyter notebook ProteinQ_QML.ipynb   # then choose Kernel > Restart and Run All
+[UCI SIRTUIN6 small molecules dataset](https://archive.ics.uci.edu/) [1]
+
+| Property | Value |
+|---|---|
+| Molecules | 100 |
+| Descriptors | 6 (`SC-5`, `SP-6`, `SHBd`, `minHaaCH`, `maxwHBa`, `FMF`) |
+| Classes | `High_BFE` / `Low_BFE` |
+| Majority-class baseline | 52% |
+| Split | Stratified 75 train / 25 test (inner 60 / 15 train / validation for tuning) |
+
+Random forest importance ranking of the features: `SP-6 > FMF > minHaaCH > SC-5 > maxwHBa > SHBd`.
+
+## Method
+
+- **Preprocessing:** standardize inputs, then encode as rotation angles via `2·arctan(x)`
+- **Circuit:** RY angle encoding, trainable RY layers with a CNOT entangling chain, one measured qubit
+- **Optimizer:** COBYLA, 100 iterations
+- **Baselines:** RBF-SVM, logistic regression, random forest (all on the same split)
+- **Uncertainty:** 95% Wilson confidence intervals on test accuracy
+
+### Hyperparameter selection (validation set, seed 42 unless noted)
+
+| Setting | Values tried | Result |
+|---|---|---|
+| COBYLA initial step (`rhobeg`) | 0.1, 0.5, 1.0 | 0.1 worst (acc 0.60); 0.5 and 1.0 both 0.80; **0.5 chosen** on validation macro F1 |
+| Circuit depth | 1, 2, 3 layers | **2 layers** best (0.80); 1 and 3 layers 0.60 |
+| Random seed | 7, 21, 42 | 0.667, 0.800, 0.800, so seed alone moves accuracy by more than 13 points |
+
+Final VQC: **2 layers, `rhobeg` = 0.5, seed 42** (validation macro F1 = 0.7847).
+
+## Results
+
+### All 6 features (final held-out test, single run)
+
+| Model | Accuracy | Macro F1 |
+|---|---|---|
+| VQC | 0.72 | 0.72 |
+| RBF-SVM | 0.84 | 0.838 |
+| Logistic regression | 0.84 | 0.84 |
+
+The classical models classified 3 more of the 25 test molecules correctly.
+
+### Feature reduction (top 6 / 4 / 2 features by importance)
+
+| Model | 6 features | 4 features | 2 features |
+|---|---|---|---|
+| VQC | 0.768 | 0.760 | **0.880** |
+| Logistic regression | 0.80 | 0.84 | 0.80 |
+| RBF-SVM | 0.84 | 0.96 | 0.84 |
+| Random forest | 0.84 | 0.80 | 0.84 |
+
+*Test accuracy. Values for the classical models are read from the results plots; exact numbers are in the exported CSV.*
+
+### How certain are the results?
+
+95% Wilson intervals at 2 features (n = 25):
+
+| Model | Test accuracy | 95% CI |
+|---|---|---|
+| VQC | 0.88 (22/25) | 0.700 – 0.958 |
+| Logistic regression | 0.80 (20/25) | 0.609 – 0.911 |
+| RBF-SVM | 0.84 (21/25) | 0.653 – 0.936 |
+| Random forest | 0.84 (21/25) | 0.653 – 0.936 |
+
+All intervals overlap, so the VQC's higher score at 2 features is **not** strong evidence that it outperforms classical models.
+
+## Honest limits
+
+- No quantum advantage is claimed.
+- Each test molecule is worth 4 accuracy points; the test set is tiny.
+- VQC results depend heavily on the random initialization.
+- Classical models train in milliseconds with no random start to tune.
+- Feature ranking and feature-count comparisons were evaluated on the same 25-molecule test set, so the best numbers should be read as optimistic.
+
+## Hardware
+
+A hardware check was run on the IBM Quantum platform (see `notebooks/` for the hardware notebook).
+
+| Item | Value |
+|---|---|
+| Backend | _fill in_ |
+| Shots | _fill in_ |
+| Simulator vs. hardware accuracy | _fill in_ |
+
+## Repository structure
+
+```
+.
+├── README.md
+├── notebooks/
+│   ├── ProteinQ_QML.ipynb                   # main experiments: training, baselines, plots
+│   └── ProteinQ_hardware_check.ipynb        # IBM hardware run
+├── results/                                 # exported CSV results, figures
+├── docs/
+│   └── ProteinQ_report.pdf                  # project write-up
+└── requirements.txt
 ```
 
-- Expected runtime: [fill in, e.g. about N minutes on a laptop]
-- Random seeds used: [fill in the split seed]. VQC tuning used seeds 7, 21 and 42 (42 was selected). The feature-reduction study ran the VQC with 5 seeds: [list them].
-- Output: the figures are written to `figures/`. [Confirm that the main figure is saved as `figures/main_result.png`.]
-- Internet: the first run downloads the dataset from the UCI Machine Learning Repository. [Confirm how the notebook loads it.]
-- Needs an IBM Quantum account? [No for the simulator results. Fill in if a hardware run is included.]
+_Rename the uploaded notebooks to match, or adjust the tree above to your actual layout._
 
-## Repository contents
+## Getting started
 
-| Path | What it is |
-|------|------------|
-| `WRITEUP.pdf` | Write-up (2 to 4 pages): Problem, Method, Results, Honest limits |
-| `AI_USE_NOTE.md` | Tools used, one thing the AI got wrong, how we caught it |
-| `ProteinQ_QML.ipynb` | Full notebook: data split, VQC, tuning, baselines, feature-reduction study, plots |
-| `results/` | Exported CSV results [confirm folder name] |
-| `figures/` | All figures used in the write-up, including training curves and confusion matrices |
-| `requirements.txt` | Pinned package versions |
-| [project plan file] | Project plan [confirm file name] |
+```bash
+git clone https://github.com/hareem-arshad/quantum-ml-protein-analysis.git
+cd quantum-ml-protein-analysis
+pip install -r requirements.txt
+jupyter notebook notebooks/ProteinQ_QML.ipynb
+```
 
-## What is simulated
+Typical dependencies: `qiskit`, `qiskit-machine-learning`, `qiskit-ibm-runtime`, `scikit-learn`, `numpy`, `pandas`, `matplotlib`. Both notebooks run on the free Colab tier. Running on IBM hardware requires an IBM Quantum account and API token (never commit your token).
 
-All VQC results come from exact statevector simulation on a classical computer. There is no shot noise, no noise model and no real quantum hardware in the main results. Nothing is a statistical shortcut: the circuit is simulated exactly and the model reads out the probability that the last qubit measures 1. The classical baselines are standard scikit-learn models.
+## Reproducing the results
 
-The VQC itself uses angle encoding (each standardized feature becomes the angle 2*arctan(x) of an RY rotation on its own qubit, so 6 features use 6 qubits), then 2 layers of trainable RY rotations with a chain of CNOT gates, trained with COBYLA for 100 iterations on binary cross-entropy loss. With 6 qubits it has 12 trainable weights.
+1. Open the main notebook and run all cells; the split uses a fixed stratified seed.
+2. Set the VQC seed to 42 to reproduce the reported final model. Other seeds will give different accuracies.
+3. Figures (accuracy vs. feature count, ROC curves, confusion matrices) and CSVs are written to `results/`.
 
-## Hardware run (optional bonus)
+## Possible next steps
 
-<backend_name:Ibm_fez,  open instance , job_id: dbehkb7pc3tc739lngng>
+- Repeat the VQC over many seeds and report mean ± standard deviation
+- Use repeated stratified k-fold or leave-one-out cross-validation on all 100 molecules
+- Select features and feature count using training/validation data only
+- Compare against classical models matched in parameter count
 
+## AI usage
 
-## Honest limits (short version)
+ChatGPT and Claude chat features were used to clarify concepts, improve documentation, and suggest code. The team reviewed every AI suggestion by hand. Some suggestions were generic and not specific to our setup; these were caught during review and testing.
 
-- No quantum advantage is claimed. The classical models were equal or better at 6 and 4 features, and the 2-feature result is a statistical tie, since one test molecule is worth 4 points and the intervals overlap.
-- Everything uses a single train/test split of 100 molecules. Features were ranked once, and settings tuned at 6 features were reused at 4 and 2.
-- We did not test shot noise, hardware noise, other feature maps, a quantum kernel or cross-validation.
+## References
 
-The full discussion is in `WRITEUP.pdf`.
+1. SIRTUIN6 small molecules dataset, UC Irvine Machine Learning Repository.
+2. Fiorentino, F., Mai, A., & Rotili, D. (2021). Emerging therapeutic potential of SIRT6 modulators. *Journal of Medicinal Chemistry*, 64(14), 9732–9758. https://doi.org/10.1021/acs.jmedchem.1c00601
 
-## Credits
+## License
 
-- Dataset: SIRTUIN6 small molecules, UC Irvine Machine Learning Repository.
-- Background on SIRT6: Fiorentino, F., Mai, A., & Rotili, D. (2021). Emerging therapeutic potential of SIRT6 modulators. *Journal of Medicinal Chemistry*, 64(14), 9732-9758.
-- Libraries: Qiskit (circuits and statevector simulation), SciPy (COBYLA optimizer), scikit-learn (splits, baselines, metrics). [Add NumPy, pandas and Matplotlib if used.]
-- AI assistance: ChatGPT and Claude were used for explanations, documentation and code suggestions. See `AI_USE_NOTE.md`.
+_Add a license (e.g., MIT) before publishing._
