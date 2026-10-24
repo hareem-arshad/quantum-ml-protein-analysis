@@ -22,17 +22,28 @@ Binding free energy (BFE) measures how tightly a molecule binds. Low BFE means a
 
 ## Dataset
 
-[UCI SIRTUIN6 small molecules dataset](https://archive.ics.uci.edu/) [1]
+[Sirtuin6 Small Molecules](https://archive.ics.uci.edu/dataset/748) [1]
 
 | Property | Value |
 |---|---|
 | Molecules | 100 |
 | Descriptors | 6 (`SC-5`, `SP-6`, `SHBd`, `minHaaCH`, `maxwHBa`, `FMF`) |
-| Classes | `High_BFE` / `Low_BFE` |
-| Majority-class baseline | 52% |
-| Split | Stratified 75 train / 25 test (inner 60 / 15 train / validation for tuning) |
+| Target (`Class`) | `High_BFE` (weak binder) / `Low_BFE` (strong binder) |
+| Majority-class baseline | 52% (13 of 25 test molecules are `High_BFE`) |
+| Split | Stratified 75 train / 25 test (inner 60 / 15 train / validation split for tuning) |
 
-Random forest importance ranking of the features: `SP-6 > FMF > minHaaCH > SC-5 > maxwHBa > SHBd`.
+Random forest feature importance (seed 42, fit on the training split):
+
+| Rank | Feature | Importance |
+|---|---|---|
+| 1 | `SP-6` | 0.3336 |
+| 2 | `FMF` | 0.2415 |
+| 3 | `minHaaCH` | 0.1362 |
+| 4 | `SC-5` | 0.1360 |
+| 5 | `maxwHBa` | 0.0910 |
+| 6 | `SHBd` | 0.0616 |
+
+The top-4 and top-2 feature sets used in the feature-reduction experiments are the first four and first two rows of this table.
 
 ## Method
 
@@ -142,7 +153,7 @@ ChatGPT and Claude chat features were used to clarify concepts, improve document
 
 ## References
 
-1. SIRTUIN6 small molecules dataset, UC Irvine Machine Learning Repository.
+1. Tardu, M. & RAHIM, F. (2016). Sirtuin6 Small Molecules [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C56C9Z.
 2. Fiorentino, F., Mai, A., & Rotili, D. (2021). Emerging therapeutic potential of SIRT6 modulators. *Journal of Medicinal Chemistry*, 64(14), 9732–9758. https://doi.org/10.1021/acs.jmedchem.1c00601
 
 ## License
