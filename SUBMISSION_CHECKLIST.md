@@ -2,7 +2,7 @@
 
 Tick every box before you submit your repository link.
 
-- [ ] Repository runs from a clean start: fresh virtual environment, `pip install -r requirements.txt`, then the commands in the README
+- [] Repository runs from a clean start: fresh virtual environment, `pip install -r requirements.txt`, then the commands in the README
 - [ ] `requirements.txt` lists every package with a pinned version (`package==x.y.z`); Python version is stated in the README
 - [ ] README has team name, members, chosen problem or project, summary, exact commands and expected runtime
 - [ ] `WRITEUP.pdf` is 2-4 pages with Problem, Method, Results and Honest limits

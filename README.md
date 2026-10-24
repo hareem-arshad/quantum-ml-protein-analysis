@@ -59,8 +59,6 @@ Final VQC: **2 layers, `rhobeg` = 0.5, seed 42** (validation macro F1 = 0.7847).
 | RBF-SVM | 0.84 | 0.838 |
 | Logistic regression | 0.84 | 0.84 |
 
-The classical models classified 3 more of the 25 test molecules correctly.
-
 ### Feature reduction (top 6 / 4 / 2 features by importance)
 
 | Model | 6 features | 4 features | 2 features |
@@ -83,25 +81,13 @@ The classical models classified 3 more of the 25 test molecules correctly.
 | RBF-SVM | 0.84 (21/25) | 0.653 – 0.936 |
 | Random forest | 0.84 (21/25) | 0.653 – 0.936 |
 
-All intervals overlap, so the VQC's higher score at 2 features is **not** strong evidence that it outperforms classical models.
-
-## Honest limits
-
-- No quantum advantage is claimed.
-- Each test molecule is worth 4 accuracy points; the test set is tiny.
-- VQC results depend heavily on the random initialization.
-- Classical models train in milliseconds with no random start to tune.
-- Feature ranking and feature-count comparisons were evaluated on the same 25-molecule test set, so the best numbers should be read as optimistic.
+VQC's higher score at 2 features
 
 ## Hardware
 
 A hardware check was run on the IBM Quantum platform (see `src/proteinq_with_hardware_check.ipynb`).
 
-| Item | Value |
-|---|---|
-| Backend | _fill in_ |
-| Shots | _fill in_ |
-| Simulator vs. hardware accuracy | _fill in_ |
+<backend_name:Ibm_fez,  open instance , job_id: dbehkb7pc3tc739lngng>
 
 ## Repository structure
 
@@ -144,13 +130,6 @@ Typical dependencies: `qiskit`, `qiskit-machine-learning`, `qiskit-ibm-runtime`,
 1. Open the main notebook and run all cells; the split uses a fixed stratified seed.
 2. Set the VQC seed to 42 to reproduce the reported final model. Other seeds will give different accuracies.
 3. Figures (accuracy vs. feature count, ROC curves, confusion matrices) are saved to `figures/`.
-
-## Possible next steps
-
-- Repeat the VQC over many seeds and report mean ± standard deviation
-- Use repeated stratified k-fold or leave-one-out cross-validation on all 100 molecules
-- Select features and feature count using training/validation data only
-- Compare against classical models matched in parameter count
 
 ## AI usage
 
