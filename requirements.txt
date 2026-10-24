@@ -1,0 +1,10 @@
+# Pin EVERY package you use to an exact version (package==x.y.z).
+# Generate your list with:  pip freeze > requirements.txt   (then trim to what you use)
+# Also write your Python version in README.md.
+#
+# Example format only; replace with the versions you actually ran:
+# qiskit==X.Y.Z
+# qiskit-aer==X.Y.Z
+# numpy==X.Y.Z
+# scipy==X.Y.Z
+# matplotlib==X.Y.Z
