@@ -7,8 +7,6 @@ ProteinQ builds and benchmarks a VQC that predicts whether a small molecule is a
 **Track:** Quantum Machine Learning, Problem 3 (Build and Benchmark a Variational Quantum Classifier)
 **Team:** Hareem Arshad, Alaa Osman, Ayden, Colson Asher
 
-> **TL;DR: No quantum advantage is claimed.** Classical models beat the VQC with 6 and 4 features and are statistically indistinguishable from it with 2 features. With only 25 test molecules, the results are suggestive at best.
-
 ---
 
 ## Background
