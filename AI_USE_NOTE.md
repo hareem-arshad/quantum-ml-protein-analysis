@@ -1,19 +1,18 @@
 # AI-use note
 
-AI assistants are welcome at every step. This note is part of your submission and is part of the judging for honesty and understanding. Keep it short (a few lines per item) but **specific**.
-
 ## Tools used
 
-<Which AI tools (e.g. chat assistants, code assistants) and what you used each for: ideas, code, debugging, writing.>
+We used the chat features of ChatGPT and Claude to make code suggestions and review mistakes and errors in the documentation. Claude broke down complex topics for understanding.
 
 ## One thing the AI got wrong
 
-<A real, specific error: a wrong gate or formula, a hallucinated function or package, a misleading explanation, code that ran but gave the wrong answer. "The AI sometimes makes mistakes" is not acceptable.>
+AI suggestions in the documentation and overall experimental direction were vague, too general, and not specific to our experimental setup. Thus, we needed to screen the suggestions with the rest of the team first. 
+
 
 ## How we caught it
 
-<The check that revealed it: a unit test, a comparison with exact diagonalisation or a classical solver, a known limiting case, reading the documentation, a sanity plot.>
+We caught the documentation and methodology mistakes after doing a human review, implementing and testing the suggestions.
 
 ## What we verified ourselves
 
-<Which circuits, formulas and plots every team member can explain line by line, and how you checked them.>
+We manually reviewed what we were asking the LLMs.

@@ -58,7 +58,8 @@ The VQC itself uses angle encoding (each standardized feature becomes the angle 
 
 ## Hardware run (optional bonus)
 
-[Backend name, date, job ID, and a side-by-side comparison with the simulator. Delete this section if you did not run on hardware.]
+<backend_name:Ibm_fez,  open instance , job_id: dbehkb7pc3tc739lngng>
+
 
 ## Honest limits (short version)
 
