@@ -70,7 +70,7 @@ The classical models classified 3 more of the 25 test molecules correctly.
 | RBF-SVM | 0.84 | 0.96 | 0.84 |
 | Random forest | 0.84 | 0.80 | 0.84 |
 
-*Test accuracy. Values for the classical models are read from the results plots; exact numbers are in the exported CSV.*
+*Test accuracy. Values for the classical models are read from the results plots; check exact numbers in the notebook outputs.*
 
 ### How certain are the results?
 
@@ -95,7 +95,7 @@ All intervals overlap, so the VQC's higher score at 2 features is **not** strong
 
 ## Hardware
 
-A hardware check was run on the IBM Quantum platform (see `notebooks/` for the hardware notebook).
+A hardware check was run on the IBM Quantum platform (see `src/proteinq_with_hardware_check.ipynb`).
 
 | Item | Value |
 |---|---|
@@ -108,16 +108,25 @@ A hardware check was run on the IBM Quantum platform (see `notebooks/` for the h
 ```
 .
 ├── README.md
-├── notebooks/
-│   ├── ProteinQ_QML.ipynb                   # main experiments: training, baselines, plots
-│   └── ProteinQ_hardware_check.ipynb        # IBM hardware run
-├── results/                                 # exported CSV results, figures
-├── docs/
-│   └── ProteinQ_report.pdf                  # project write-up
-└── requirements.txt
+├── figures/                                 # plots used in the report
+│   ├── Confusion Matrix.png
+│   ├── Experiment 1 - COBYLA.png
+│   ├── Experiment 2.png
+│   ├── Experiment 3.png
+│   ├── VQC Stability.png
+│   ├── VQC Training Loss.png
+│   └── VQC vs SVM Accuracy Comparison.png
+├── src/
+│   ├── proteinq-notebook-qml-vs-classical-ml.ipynb   # main experiments: training, baselines, plots
+│   └── proteinq_with_hardware_check.ipynb            # IBM hardware run
+├── ProteinQ - QML Model to Predict SIRT6 Protein Bindings.pdf   # project write-up
+├── AI_USE_NOTE.md
+├── SUBMISSION_CHECKLIST.md
+├── WRITEUP_TEMPLATE.md
+├── requirements.txt
+├── LICENSE
+└── .gitignore
 ```
-
-_Rename the uploaded notebooks to match, or adjust the tree above to your actual layout._
 
 ## Getting started
 
@@ -125,7 +134,7 @@ _Rename the uploaded notebooks to match, or adjust the tree above to your actual
 git clone https://github.com/hareem-arshad/quantum-ml-protein-analysis.git
 cd quantum-ml-protein-analysis
 pip install -r requirements.txt
-jupyter notebook notebooks/ProteinQ_QML.ipynb
+jupyter notebook src/proteinq-notebook-qml-vs-classical-ml.ipynb
 ```
 
 Typical dependencies: `qiskit`, `qiskit-machine-learning`, `qiskit-ibm-runtime`, `scikit-learn`, `numpy`, `pandas`, `matplotlib`. Both notebooks run on the free Colab tier. Running on IBM hardware requires an IBM Quantum account and API token (never commit your token).
@@ -134,7 +143,7 @@ Typical dependencies: `qiskit`, `qiskit-machine-learning`, `qiskit-ibm-runtime`,
 
 1. Open the main notebook and run all cells; the split uses a fixed stratified seed.
 2. Set the VQC seed to 42 to reproduce the reported final model. Other seeds will give different accuracies.
-3. Figures (accuracy vs. feature count, ROC curves, confusion matrices) and CSVs are written to `results/`.
+3. Figures (accuracy vs. feature count, ROC curves, confusion matrices) are saved to `figures/`.
 
 ## Possible next steps
 
@@ -145,7 +154,7 @@ Typical dependencies: `qiskit`, `qiskit-machine-learning`, `qiskit-ibm-runtime`,
 
 ## AI usage
 
-ChatGPT and Claude chat features were used to clarify concepts, improve documentation, and suggest code. The team reviewed every AI suggestion by hand. Some suggestions were generic and not specific to our setup; these were caught during review and testing.
+ChatGPT and Claude chat features were used to clarify concepts, improve documentation, and suggest code. The team reviewed every AI suggestion by hand (see [AI_USE_NOTE.md](AI_USE_NOTE.md)). Some suggestions were generic and not specific to our setup; these were caught during review and testing.
 
 ## References
 
@@ -154,4 +163,4 @@ ChatGPT and Claude chat features were used to clarify concepts, improve document
 
 ## License
 
-_Add a license (e.g., MIT) before publishing._
+See [LICENSE](LICENSE).
