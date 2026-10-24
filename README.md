@@ -1,11 +1,15 @@
 # ProteinQ: A Variational Quantum Classifier for SIRT6 Binding Prediction
 
+**Hackathon:** Developed as part of the [Interstate Quantum Hackathon for Beginners 2026](https://iq-hackathon.github.io/hackathon-beginners-26/), organized by the **MTSU QRISE Center at Middle Tennessee State University**, in collaboration with participating universities and supporting organizations. Thanks to the organizers and mentors for providing this opportunity to explore quantum computing and quantum machine learning.
+
+**Track:** Quantum Machine Learning, Problem 3 (Build and Benchmark a Variational Quantum Classifier)
+**Team:** Hareem Arshad, Alaa Osman, Ayden, Colson Asher
+
 Can a small variational quantum classifier (VQC) learn a real drug-discovery task today, and how does it compare with standard classical models?
 
 ProteinQ builds and benchmarks a VQC that predicts whether a small molecule is a **high** or **low** binder of the SIRT6 protein, and compares it against logistic regression, an RBF-SVM, and a random forest.
 
-**Track:** Quantum Machine Learning, Problem 3 (Build and Benchmark a Variational Quantum Classifier)
-**Team:** Hareem Arshad, Alaa Osman, Ayden, Colson Asher
+
 
 ---
 
