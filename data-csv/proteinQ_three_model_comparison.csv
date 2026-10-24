@@ -1,0 +1,4 @@
+Model,Accuracy,Macro F1
+Quantum VQC,0.72,0.72
+Logistic Regression,0.84,0.8397435897435898
+RBF-SVM,0.84,0.8376623376623377
