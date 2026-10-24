@@ -85,7 +85,9 @@ VQC's higher score at 2 features
 
 A hardware check was run on the IBM Quantum platform (see `src/proteinq_with_hardware_check.ipynb`).
 
-<backend_name:Ibm_fez,  open instance , job_id: dbehkb7pc3tc739lngng>
+backend_name:Ibm_fez
+
+Our VQC reached 72% test accuracy on all 6 features and 88% on the top 2 (150 iterations, Statevector simulator), though with only 25 test molecules and overlapping confidence intervals this is promising but not conclusive, and our IBM hardware run did not finish because our execution-time limit ran out, so hardware execution and error mitigation are future work.
 
 ## Repository structure
 
